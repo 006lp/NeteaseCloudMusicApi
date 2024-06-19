@@ -448,5 +448,6 @@ $ npm test
 ## License
 
 [The MIT License (MIT)](https://gitlab.com/Binaryify/NeteaseCloudMusicApi/blob/main/LICENSE)
-#   N e t e a s e C l o u d M u s i c A p i  
+#   N e t e a s e C l o u d M u s i c A p i 
+ 
  
