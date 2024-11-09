@@ -1,3 +1,4 @@
+const createOption = require('../util/option.js')
 module.exports = (query, request) => {
   const data = {
     refer: 'inbox_invite',
@@ -5,15 +6,8 @@ module.exports = (query, request) => {
     inviterId: query.inviterId,
   }
   return request(
-    'POST',
-    `http://interface.music.163.com/eapi/listen/together/play/invitation/accept`,
+    `/api/listen/together/play/invitation/accept`,
     data,
-    {
-      crypto: 'eapi',
-      cookie: query.cookie,
-      proxy: query.proxy,
-      realIP: query.realIP,
-      url: '/api/listen/together/play/invitation/accept',
-    },
+    createOption(query),
   )
 }

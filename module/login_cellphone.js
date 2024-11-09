@@ -2,8 +2,11 @@
 
 const CryptoJS = require('crypto-js')
 
+const createOption = require('../util/option.js')
 module.exports = async (query, request) => {
   const data = {
+    type: '1',
+    https: 'true',
     phone: query.phone,
     countrycode: query.countrycode || '86',
     captcha: query.captcha,
@@ -13,17 +16,9 @@ module.exports = async (query, request) => {
     rememberLogin: 'true',
   }
   let result = await request(
-    'POST',
-    `https://music.163.com/weapi/login/cellphone`,
+    `/api/w/login/cellphone`,
     data,
-    {
-      crypto: 'weapi',
-      uaType: 'pc',
-      cookie: query.cookie,
-      ua: query.ua || '',
-      proxy: query.proxy,
-      realIP: query.realIP,
-    },
+    createOption(query),
   )
 
   if (result.body.code === 200) {

@@ -1,5 +1,6 @@
 // 用户动态
 
+const createOption = require('../util/option.js')
 module.exports = (query, request) => {
   const data = {
     getcounts: true,
@@ -7,16 +8,5 @@ module.exports = (query, request) => {
     limit: query.limit || 30,
     total: false,
   }
-  return request(
-    'POST',
-    `https://music.163.com/api/event/get/${query.uid}`,
-    data,
-    {
-      crypto: 'api',
-      cookie: query.cookie,
-      ua: query.ua || '',
-      proxy: query.proxy,
-      realIP: query.realIP,
-    },
-  )
+  return request(`/api/event/get/${query.uid}`, data, createOption(query))
 }

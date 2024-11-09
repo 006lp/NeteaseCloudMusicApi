@@ -1,21 +1,10 @@
 // 公开隐私歌单
 
+const createOption = require('../util/option.js')
 module.exports = (query, request) => {
   const data = {
     id: query.id,
     privacy: 0,
   }
-  return request(
-    'POST',
-    `https://interface.music.163.com/eapi/playlist/update/privacy`,
-    data,
-    {
-      crypto: 'eapi',
-      cookie: query.cookie,
-      ua: query.ua || '',
-      proxy: query.proxy,
-      realIP: query.realIP,
-      url: '/api/playlist/update/privacy',
-    },
-  )
+  return request(`/api/playlist/update/privacy`, data, createOption(query))
 }

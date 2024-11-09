@@ -80,7 +80,7 @@
 62. 电台 - 详情
 63. 电台 - 节目
 64. 给评论点赞
-65. 获取动态
+65. 获取动态列表
 66. 热搜列表(简略)
 67. 发送私信
 68. 发送私信歌单
@@ -89,7 +89,7 @@
 71. 歌单分类
 72. 收藏的歌手列表
 73. 订阅的电台列表
-74. 相关歌单推荐
+74. 相关歌单
 75. 付费精选接口
 76. 音乐是否可用检查接口
 77. 登录状态
@@ -298,6 +298,29 @@
 280. 获取专辑歌曲的音质
 281. 歌手动态信息
 282. 最近听歌列表
+283. 云盘导入歌曲
+284. 获取客户端歌曲下载链接 - 新版
+285. 当前账号关注的用户/歌手
+286. 会员下载歌曲记录
+287. 会员本月下载歌曲记录
+288. 已购买单曲
+289. 歌曲是否喜爱
+290. 用户是否互相关注
+291. 歌曲动态封面
+292. 用户徽章
+293. 用户状态
+294. 用户状态 - 支持设置的状态
+295. 用户状态 - 相同状态的用户
+296. 用户状态 - 编辑
+297. 听歌足迹 - 年度听歌足迹
+298. 听歌足迹 - 今日收听
+299. 听歌足迹 - 总收听时长
+300. 听歌足迹 - 本周/本月收听时长
+301. 听歌足迹 - 周/月/年收听报告
+302. 歌单导入 - 元数据/文字/链接导入
+303. 歌单导入 - 任务状态
+304. 副歌时间
+305. 相关歌单推荐
 
 ## 安装
 
@@ -368,7 +391,7 @@ v4.0.8 加入了 Vercel 配置文件,可以直接在 Vercel 下部署了,不需�
 
 
 ## 腾讯云 serverless 部署
-因 `Vercel` 在国内访问太慢(不绑定自己的域名的情况下),在此提供腾讯云 serverless 部署方法(注意:腾讯云 serverless 并不是免费的,前三个月有免费额度,之后收费)
+因 `Vercel` 在国内访问太慢(不绑定自己的域名的情况下),在此提供腾讯云 serverless 部署方法
 ### 操作方法
 1. [fork](https://gitlab.com/Binaryify/neteasecloudmusicapi/-/forks/new)  此项目
 2. 在腾讯云serverless应用管理页面( https://console.cloud.tencent.com/sls ),点击`新建应用`
@@ -382,6 +405,9 @@ export PORT=9000
 /var/lang/node16/bin/node app.js
 ``` 
 7. 点击`完成`,等待部署完成,点击`资源列表`的 `API网关` 里的 `URL`,正常情况会打开文档地址,点击文档`例子`可查看接口调用效果
+- 注意
+   - 腾讯云 serverless 并不是免费的,前三个月有免费额度,之后收费
+   - 当前(2024-08-24), 用此法创建的话, 会`默认`关联一个"日志服务-日志主题"(创建过程中没有提醒), 此服务是计量收费的
 
 ## 可以使用代理
 
@@ -562,6 +588,17 @@ v3.30.0 后支持手动传入 cookie,登录接口返回内容新增 `cookie` 字
 {
     ...,
     cookie:"xxx"
+}
+```
+另外的cookie说明:
+可以直接从浏览器中获取cookie值, 只需要其中key为`MUSIC_U`的数据即可
+请求
+```
+GET https://example.com/search?keywords=HELLO&cookie=MUSIC_U%3Dxxxx
+POST https://example.com/search?keywords=HELLO
+body {
+  ...,
+  "cookie": "MUSIC_U=xxxx"
 }
 ```
 
@@ -1190,7 +1227,7 @@ tags: 歌单标签
 
 **调用例子 :** `/playmode/intelligence/list?id=33894312&pid=24381616` , `/playmode/intelligence/list?id=33894312&pid=24381616&sid=36871368`
 
-### 获取动态消息
+### 获取动态列表
 
 说明 : 调用此接口 , 可获取各种动态 , 对应网页版网易云，朋友界面里的各种动态消息
 ，如分享的视频，音乐，照片等！
@@ -1406,15 +1443,17 @@ tags: 歌单标签
 
 **调用例子 :** `/top/playlist/highquality?before=1503639064232&limit=3`
 
-### 相关歌单推荐
+### 相关歌单
 
-说明 : 调用此接口,传入歌单 id 可获取相关歌单(对应页面 [https://music.163.com/#/playlist?id=1](https://music.163.com/#/playlist?id=1))
+说明: 请替换为[相关歌单推荐](#相关歌单推荐)接口; 本接口通过html抓取内容, 现已无法抓取歌单
 
-**必选参数 :** `id` : 歌单 id
+~~说明 : 调用此接口,传入歌单 id 可获取相关歌单(对应页面 [https://music.163.com/#/playlist?id=1](https://music.163.com/#/playlist?id=1))~~
 
-**接口地址 :** `/related/playlist`
+~~**必选参数 :** `id` : 歌单 id~~
 
-**调用例子 :** `/related/playlist?id=1`
+~~**接口地址 :** `/related/playlist`~~
+
+~~**调用例子 :** `/related/playlist?id=1`~~
 
 ### 获取歌单详情
 
@@ -1496,12 +1535,13 @@ tags: 歌单标签
 
 **必选参数 :** `id` : 音乐 id
  `level`: 播放音质等级, 分为 `standard` => `标准`,`higher` => `较高`, `exhigh`=>`极高`, 
-`lossless`=>`无损`, `hires`=>`Hi-Res`, `jyeffect` => `高清环绕声`, `sky` => `沉浸环绕声`,
-`jymaster` => `超清母带`
+`lossless`=>`无损`, `hires`=>`Hi-Res`, `jyeffect` => `高清环绕声`, `sky` => `沉浸环绕声`, `dolby` => `杜比全景声`, `jymaster` => `超清母带`
 
 **接口地址 :** `/song/url/v1`
 
 **调用例子 :** `/song/url/v1?id=33894312&level=exhigh` `/song/url/v1?id=405998841,33894312&level=lossless`
+
+说明：`杜比全景声`音质需要设备支持，不同的设备可能会返回不同码率的url。cookie需要传入`os=pc`保证返回正常码率的url。
 
 ### 音乐是否可用
 
@@ -2284,7 +2324,16 @@ djId: u64,
   其他：是DJ节目，表示DJ ID
 copyright: u32, 0, 1, 2: 功能未知
 s_id: u64, 对于t == 2的歌曲，表示匹配到的公开版本歌曲ID
-mark: u64, 功能未知
+mark: u64, 一些歌曲属性，用按位与操作获取对应位置的值
+  8192 立体声?(不是很确定)
+  131072 纯音乐
+  262144 支持 杜比全景声(Dolby Atmos)
+  1048576 脏标 🅴
+  17179869184 支持 Hi-Res
+  其他未知，理论上有从1到2^63共64种不同的信息
+  专辑信息的mark字段也同理
+  例子:id 1859245776 和 1859306637 为同一首歌，前者 mark & 1048576 == 1048576,后者 mark & 1048576 == 0，因此前者是脏版。
+  
 originCoverType: enum
   0: 未知
   1: 原曲
@@ -2301,6 +2350,14 @@ mst: u32, 偶尔为0, 常为9，功能未知
 cp: u64, 功能未知
 publishTime: i64, 毫秒为单位的Unix时间戳
 pc: 云盘歌曲信息，如果不存在该字段，则为非云盘歌曲
+privilege:权限相关信息
+  cs:bool,是否为云盘歌曲
+  st:小于0时为灰色歌曲, 使用上传云盘的方法解灰后 st == 0
+  toast:bool,是否「由于版权保护，您所在的地区暂时无法使用。」
+  flLevel:免费用户的该歌曲播放音质
+  plLevel:当前用户的该歌曲最高试听音质
+  dlLevel:当前用户的该歌曲最高下载音质
+  maxBrLevel；歌曲最高音质
 ```
 
 ### 获取专辑内容
@@ -4560,9 +4617,9 @@ qrCodeStatus:20,detailReason:0  验证成功qrCodeStatus:21,detailReason:0 二�
 
 `id`: 歌曲id
 
-**接口地址:** `song/music/detail`
+**接口地址:** `/song/music/detail`
 
-**调用例子:** `song/music/detail?id=2082700997`
+**调用例子:** `/song/music/detail?id=2082700997`
 
 返回字段说明 :
 ```
@@ -4626,6 +4683,340 @@ qrCodeStatus:20,detailReason:0  验证成功qrCodeStatus:21,detailReason:0 二�
 说明 : 调用后可获取最近听歌列表
 
 **接口地址 :** `/recent/listen/list`
+
+### 云盘导入歌曲
+
+说明: 登录后调用此接口,使用此接口,可云盘导入歌曲而无需上传文件
+
+以下情况可导入成功
+
+1.文件已经有用户上传至云盘
+
+2.文件是网易云音乐自己的音源
+
+**必选参数：**  
+
+`song`: 歌名/文件名
+
+`fileType`: 文件后缀
+
+`fileSize`: 文件大小
+
+`bitrate`: 文件比特率 
+
+`md5`: 文件MD5
+
+**可选参数：** 
+
+`id`: 歌曲ID,情况2时必须正确填写
+
+`artist`: 歌手 默认为未知
+
+`album`: 专辑 默认为未知
+
+**接口地址:** `/cloud/import`
+
+**调用例子:** `/cloud/import?song=最伟大的作品&artist=周杰伦&album=最伟大的作品&fileType=flac&fileSize=50412168&bitrate=1652&md5=d02b8ab79d91c01167ba31e349fe5275`
+
+为保证成功,请使用 `获取音乐url` 接口获取各文件属性
+
+其中比特率`bitrate`要进行以下转换
+```
+bitrate = Math.floor(br / 1000)
+```
+导入后的文件名后缀均为 `.mp3` 。但用 `获取音乐url` 获取到的文件格式仍然是正确的。
+
+### 获取客户端歌曲下载链接 - 新版
+
+说明 : 使用 `/song/url/v1` 接口获取的是歌曲试听 url, 非 VIP 账号最高只能获取 `极高` 音质，但免费类型的歌曲(`fee == 0`)使用本接口可最高获取`Hi-Res`音质的url。
+
+**必选参数 :** `id` : 音乐 id
+ `level`: 播放音质等级, 分为 `standard` => `标准`,`higher` => `较高`, `exhigh`=>`极高`, 
+`lossless`=>`无损`, `hires`=>`Hi-Res`, `jyeffect` => `高清环绕声`, `sky` => `沉浸环绕声`, `dolby` => `杜比全景声`, `jymaster` => `超清母带`
+
+**接口地址 :** `/song/download/url/v1`
+
+**调用例子 :** `/song/download/url/v1?id=2155423468&level=hires`
+
+### 当前账号关注的用户/歌手
+
+说明 : 调用此接口, 可获得当前账号关注的用户/歌手
+
+**可选参数 :** `size` : 返回数量 , 默认为 30
+
+`cursor` : 返回数据的 cursor, 默认为 0 , 传入上一次返回结果的 cursor,将会返回下一页的数据
+
+`scene` : 场景, 0 表示所有关注, 1 表示关注的歌手, 2 表示关注的用户, 默认为 0
+
+**接口地址 :** `/user/follow/mixed`
+
+**调用例子 :** `/user/follow/mixed?scene=1`
+
+### 会员下载歌曲记录
+
+说明 : 调用此接口, 可获得当前账号会员下载歌曲记录
+
+**可选参数 :**
+
+`limit` : 返回数量 , 默认为 20
+
+`offset` : 偏移数量，用于分页 ,如 :( 页数 -1)\*30, 其中 30 为 limit 的值 , 默认为 0
+
+**接口地址 :** `/song/downlist`
+
+**调用例子 :** `/song/downlist`
+
+### 会员本月下载歌曲记录
+
+说明 : 调用此接口, 可获得当前账号会员本月下载歌曲记录
+
+**可选参数 :**
+
+`limit` : 返回数量 , 默认为 20
+
+`offset` : 偏移数量，用于分页 ,如 :( 页数 -1)\*30, 其中 30 为 limit 的值 , 默认为 0
+
+**接口地址 :** `/song/monthdownlist`
+
+**调用例子 :** `/song/monthdownlist`
+
+### 已购买单曲
+
+说明 : 调用此接口, 可获得当前账号已购买单曲
+
+**可选参数 :**
+
+`limit` : 返回数量 , 默认为 20
+
+`offset` : 偏移数量，用于分页 ,如 :( 页数 -1)\*30, 其中 30 为 limit 的值 , 默认为 0
+
+**接口地址 :** `/song/singledownlist`
+
+**调用例子 :** `/song/singledownlist`
+
+### 歌曲是否喜爱
+
+说明 : 登录后调用此接口, 传入歌曲id, 可判断歌曲是否被喜爱;
+
+若传入一个包含多个歌曲ID的数组, 则接口将返回一个由这些ID中被标记为喜爱的歌曲组成的数组
+
+**必选参数 :**  
+
+`ids`: 歌曲 id 列表
+
+**接口地址 :** `/song/like/check`
+
+**调用例子 :** `/song/like/check?ids=[2058263032,1497529942]`
+
+### 用户是否互相关注
+
+说明 : 登录后调用此接口, 传入用户id, 可判断用户是否互相关注
+
+**必选参数 :**  
+
+`uid`: 用户 id
+
+**接口地址 :** `/user/mutualfollow/get`
+
+**调用例子 :** `/user/mutualfollow/get?uid=32953014`
+
+### 歌曲动态封面
+
+说明 : 登录后调用此接口, 传入歌曲id, 获取歌曲动态封面
+
+**必选参数 :**  
+
+`id`: 歌曲 id
+
+**接口地址 :** `/song/dynamic/cover`
+
+**调用例子 :** `/song/dynamic/cover?id=2101179024`
+
+### 用户徽章
+
+说明 : 调用此接口, 传入用户id, 获取用户徽章
+
+**必选参数 :**  
+
+`uid`: 用户 id
+
+**接口地址 :** `/user/medal`
+
+**调用例子 :** `/user/medal?uid=32953014`
+
+### 用户状态
+
+说明 : 登录后调用此接口, 传入用户id, 获取用户状态
+
+**必选参数 :**  
+
+`uid`: 用户 id
+
+**接口地址 :** `/user/social/status`
+
+**调用例子 :** `/user/social/status?uid=32953014`
+
+### 用户状态 - 支持设置的状态
+
+说明 : 登录后调用此接口, 获取支持设置的状态
+
+**接口地址 :** `/user/social/status/support`
+
+### 用户状态 - 相同状态的用户
+
+说明 : 登录后调用此接口, 获取相同状态的用户
+
+**接口地址 :** `/user/social/status/rcmd`
+
+### 用户状态 - 编辑
+
+说明 : 登录后调用此接口, 编辑当前用户状态， 所需参数可在接口`/user/social/status/support`获取
+
+**接口地址 :** `/user/social/status/edit`
+
+### 听歌足迹 - 年度听歌足迹
+
+说明 : 登录后调用此接口, 获取年度听歌足迹
+
+**接口地址 :** `/listen/data/year/report`
+
+### 听歌足迹 - 今日收听
+
+说明 : 登录后调用此接口, 获取今日收听
+
+**接口地址 :** `/listen/data/today/song`
+
+### 听歌足迹 - 总收听时长
+
+说明 : 登录后调用此接口, 获取总收听时长; 相关接口可能需要vip权限
+
+**接口地址 :** `/listen/data/total`
+
+### 听歌足迹 - 本周/本月收听时长
+
+说明 : 登录后调用此接口, 获取本周/本月收听时长
+
+**必选参数 :**  
+
+`type`: 维度类型 周 week 月 month; 今年没结束，不支持今年的数据
+
+**接口地址 :** `/listen/data/realtime/report`
+
+**调用例子 :** `/listen/data/realtime/report?type=month`
+
+### 听歌足迹 - 周/月/年收听报告
+
+说明 : 登录后调用此接口, 获取周/月/年收听报告
+
+**必选参数 :**  
+
+`type`: 维度类型 周 week 月 month 年 year
+
+**可选参数 :**
+
+`endTime` : 周: 每周周六0点的时间戳 月: 每月最后一天0点的时间戳 年: 每年最后一天0点的时间戳
+不填就是本周/月的, 今年没结束，则没有今年的数据
+
+**接口地址 :** `/listen/data/report`
+
+**调用例子 :** `/listen/data/report?type=month`
+
+### 歌单导入 - 元数据/文字/链接导入
+
+说明 : 登录后调用此接口, 支持通过元数据/文字/链接三种方式生成歌单; 三种方式不可同时调用
+
+**接口地址 :** `/playlist/import/name/task/create`
+
+**可选参数 :**
+
+`importStarPlaylist` : 是否导入`我喜欢的音乐`, 此项为true则不生成新的歌单
+`playlistName` : 生成的歌单名, 仅文字导入和链接导入支持, 默认为```'导入音乐 '.concat(new Date().toLocaleString())```
+
+**元数据导入 :**  
+
+`local`: json类型的字符串, 如：
+```javascript
+let local = encodeURIComponent(
+  JSON.stringify([
+    {
+      name: 'アイニーブルー', // 歌曲名称
+      artist: 'ZLMS',        // 艺术家名称
+      album: 'アイニーブルー',// 专辑名称
+    },
+    {
+      name: 'ファンタズマ',
+      artist: 'sasakure.UK',
+      album: '未来イヴ',
+    },
+  ]),
+)
+```
+
+**调用例子 :** `/playlist/import/name/task/create?local=${local}`
+
+**文字导入 :**  
+
+`text`: 导入的文字, 如：
+```javascript
+let text = encodeURIComponent(`アイニーブルー ZLMS
+ファンタズマ sasakure.UK`)
+```
+
+**调用例子 :** `/playlist/import/name/task/create?text=${text}`
+
+**链接导入 :**  
+
+`link`: 存有歌单链接的数组类型的字符串, 如：
+```javascript
+let link = encodeURIComponent(
+  JSON.stringify([
+    'https://i.y.qq.com/n2/m/share/details/taoge.html?id=7716341988&hosteuin=',
+    'https://i.y.qq.com/n2/m/share/details/taoge.html?id=8010042041&hosteuin=',
+  ]),
+)
+```
+歌单链接来源:
+1. 将歌单分享到微信/微博/QQ后复制链接
+2. 直接复制歌单/个人主页链接
+3. 直接复制文章链接
+
+**调用例子 :** `/playlist/import/name/task/create?link=${link}`
+
+### 歌单导入 - 任务状态
+
+说明: 调用此接口, 传入导入歌单任务id, 获取任务状态
+
+**必选参数：**     
+
+`id`: 任务id
+
+**接口地址:** `/playlist/import/task/status`
+
+**调用例子:** `/playlist/import/task/status?id=123834369`
+
+### 副歌时间
+
+说明: 调用此接口, 传入歌曲id, 获取副歌时间
+
+**必选参数：**     
+
+`id`: 歌曲id
+
+**接口地址:** `/song/chorus`
+
+**调用例子:** `/song/chorus?id=2058263032`
+
+### 相关歌单推荐
+
+说明: 调用此接口, 传入歌单id, 获取相关歌单推荐
+
+**必选参数：**     
+
+`id`: 歌单id
+
+**接口地址:** `/playlist/detail/rcmd/get`
+
+**调用例子:** `/playlist/detail/rcmd/get?id=8039587836`
 
 ## 离线访问此文档
 

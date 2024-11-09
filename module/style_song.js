@@ -1,5 +1,6 @@
 // 曲风-歌曲
 
+const createOption = require('../util/option.js')
 module.exports = (query, request) => {
   const data = {
     cursor: query.cursor || 0,
@@ -7,16 +8,5 @@ module.exports = (query, request) => {
     tagId: query.tagId,
     sort: query.sort || 0,
   }
-  return request(
-    'POST',
-    `https://music.163.com/api/style-tag/home/song`,
-    data,
-    {
-      crypto: 'weapi',
-      cookie: query.cookie,
-      ua: query.ua || '',
-      proxy: query.proxy,
-      realIP: query.realIP,
-    },
-  )
+  return request(`/api/style-tag/home/song`, data, createOption(query, 'weapi'))
 }

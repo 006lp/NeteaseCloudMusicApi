@@ -1,5 +1,6 @@
 // 收藏单曲到歌单 从歌单删除歌曲
 
+const createOption = require('../util/option.js')
 module.exports = async (query, request) => {
   //
   const tracks = query.tracks.split(',')
@@ -12,16 +13,9 @@ module.exports = async (query, request) => {
 
   try {
     const res = await request(
-      'POST',
-      `https://music.163.com/weapi/playlist/manipulate/tracks`,
+      `/api/playlist/manipulate/tracks`,
       data,
-      {
-        crypto: 'weapi',
-        cookie: query.cookie,
-        ua: query.ua || '',
-        proxy: query.proxy,
-        realIP: query.realIP,
-      },
+      createOption(query),
     )
     return {
       status: 200,
@@ -32,21 +26,14 @@ module.exports = async (query, request) => {
   } catch (error) {
     if (error.body.code === 512) {
       return request(
-        'POST',
-        `https://music.163.com/api/playlist/manipulate/tracks`,
+        `/api/playlist/manipulate/tracks`,
         {
           op: query.op, // del,add
           pid: query.pid, // 歌单id
           trackIds: JSON.stringify([...tracks, ...tracks]),
           imme: 'true',
         },
-        {
-          crypto: 'weapi',
-          cookie: query.cookie,
-          ua: query.ua || '',
-          proxy: query.proxy,
-          realIP: query.realIP,
-        },
+        createOption(query),
       )
     } else {
       return {

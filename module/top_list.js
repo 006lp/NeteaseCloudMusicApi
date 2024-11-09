@@ -1,7 +1,6 @@
 // 排行榜
+const createOption = require('../util/option.js')
 module.exports = (query, request) => {
-  query.cookie.os = 'pc'
-  query.cookie.appver = '2.9.7'
   if (query.idx) {
     return Promise.resolve({
       status: 500,
@@ -17,16 +16,5 @@ module.exports = (query, request) => {
     n: '500',
     s: '0',
   }
-  return request(
-    'POST',
-    `https://interface3.music.163.com/api/playlist/v4/detail`,
-    data,
-    {
-      crypto: 'weapi',
-      cookie: query.cookie,
-      ua: query.ua || '',
-      proxy: query.proxy,
-      realIP: query.realIP,
-    },
-  )
+  return request(`/api/playlist/v4/detail`, data, createOption(query))
 }

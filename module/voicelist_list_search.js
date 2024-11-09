@@ -1,4 +1,5 @@
 //声音搜索
+const createOption = require('../util/option.js')
 module.exports = (query, request) => {
   const data = {
     limit: query.limit || '200',
@@ -9,16 +10,5 @@ module.exports = (query, request) => {
     voiceFeeType: query.voiceFeeType || null,
     radioId: query.voiceListId,
   }
-  return request(
-    'POST',
-    'https://interface.music.163.com/api/voice/workbench/voice/list',
-    data,
-    {
-      crypto: 'weapi',
-      cookie: query.cookie,
-      ua: query.ua || '',
-      proxy: query.proxy,
-      realIP: query.realIP,
-    },
-  )
+  return request('/api/voice/workbench/voice/list', data, createOption(query))
 }

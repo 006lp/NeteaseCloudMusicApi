@@ -7,6 +7,7 @@ const deviceidText = fs.readFileSync(
   'utf-8',
 )
 
+const createOption = require('../util/option.js')
 const deviceidList = deviceidText.split('\n')
 
 function getRandomFromList(list) {
@@ -25,7 +26,6 @@ function cloudmusic_dll_encode_id(some_id) {
 }
 
 module.exports = async (query, request) => {
-  query.cookie.os = 'iOS'
   const deviceId = getRandomFromList(deviceidList)
   global.deviceId = deviceId
   const encodedId = CryptoJS.enc.Base64.stringify(
@@ -37,16 +37,9 @@ module.exports = async (query, request) => {
     username: encodedId,
   }
   let result = await request(
-    'POST',
-    `https://music.163.com/api/register/anonimous`,
+    `/api/register/anonimous`,
     data,
-    {
-      crypto: 'weapi',
-      cookie: query.cookie,
-      ua: query.ua || '',
-      proxy: query.proxy,
-      realIP: query.realIP,
-    },
+    createOption(query, 'weapi'),
   )
   if (result.body.code === 200) {
     result = {

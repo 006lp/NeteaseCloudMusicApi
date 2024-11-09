@@ -1,5 +1,6 @@
 // 智能播放
 
+const createOption = require('../util/option.js')
 module.exports = (query, request) => {
   const data = {
     songId: query.id,
@@ -8,16 +9,5 @@ module.exports = (query, request) => {
     startMusicId: query.sid || query.id,
     count: query.count || 1,
   }
-  return request(
-    'POST',
-    `https://music.163.com/weapi/playmode/intelligence/list`,
-    data,
-    {
-      crypto: 'weapi',
-      cookie: query.cookie,
-      ua: query.ua || '',
-      proxy: query.proxy,
-      realIP: query.realIP,
-    },
-  )
+  return request(`/api/playmode/intelligence/list`, data, createOption(query))
 }

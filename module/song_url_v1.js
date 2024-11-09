@@ -2,6 +2,7 @@
 // 此版本不再采用 br 作为音质区分的标准
 // 而是采用 standard, exhigh, lossless, hires, jyeffect(高清环绕声), sky(沉浸环绕声), jymaster(超清母带) 进行音质判断
 
+const createOption = require('../util/option.js')
 module.exports = (query, request) => {
   const data = {
     ids: '[' + query.id + ']',
@@ -11,17 +12,5 @@ module.exports = (query, request) => {
   if (data.level == 'sky') {
     data.immerseType = 'c51'
   }
-  return request(
-    'POST',
-    `https://interface.music.163.com/eapi/song/enhance/player/url/v1`,
-    data,
-    {
-      crypto: 'eapi',
-      cookie: query.cookie,
-      ua: query.ua || '',
-      proxy: query.proxy,
-      realIP: query.realIP,
-      url: '/api/song/enhance/player/url/v1',
-    },
-  )
+  return request(`/api/song/enhance/player/url/v1`, data, createOption(query))
 }

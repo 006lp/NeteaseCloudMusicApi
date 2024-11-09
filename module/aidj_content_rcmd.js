@@ -2,8 +2,9 @@
 
 // 实际请求参数如下, 部分内容省略, 敏感信息已进行混淆
 // 可按需修改此 API 的代码
-/* {"extInfo":"{\"lastRequestTimestamp\":1692358373509,\"lbsInfoList\":[{\"lat\":40.23076381,\"lon\":129.07545186,\"time\":1692358543},{\"lat\":40.23076381,\"lon\":129.07545186,\"time\":1692055283}],\"listenedTs\":false,\"noAidjToAidj\":true}","header":"{}","e_r":true} */
+/* {"extInfo":"{\"lastRequestTimestamp\":1692358373509,\"lbsInfoList\":[{\"lat\":40.23076381,\"lon\":129.07545186,\"time\":1692358543},{\"lat\":40.23076381,\"lon\":129.07545186,\"time\":1692055283}],\"listenedTs\":false,\"noAidjToAidj\":true}","header":"{}"} */
 
+const createOption = require('../util/option.js')
 module.exports = (query, request) => {
   var extInfo = {}
   if (query.latitude != undefined) {
@@ -22,17 +23,5 @@ module.exports = (query, request) => {
     extInfo: JSON.stringify(extInfo),
   }
   // console.log(data)
-  return request(
-    'POST',
-    `https://interface3.music.163.com/eapi/aidj/content/rcmd/info`,
-    data,
-    {
-      crypto: 'eapi',
-      cookie: query.cookie,
-      ua: query.ua || '',
-      proxy: query.proxy,
-      realIP: query.realIP,
-      url: '/api/aidj/content/rcmd/info',
-    },
-  )
+  return request(`/api/aidj/content/rcmd/info`, data, createOption(query))
 }

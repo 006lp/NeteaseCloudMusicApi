@@ -1,5 +1,6 @@
 // 视频标签/分类下的视频
 
+const createOption = require('../util/option.js')
 module.exports = (query, request) => {
   const data = {
     groupId: query.id,
@@ -8,15 +9,8 @@ module.exports = (query, request) => {
     total: true,
   }
   return request(
-    'POST',
-    `https://music.163.com/api/videotimeline/videogroup/otherclient/get`,
+    `/api/videotimeline/videogroup/otherclient/get`,
     data,
-    {
-      crypto: 'weapi',
-      cookie: query.cookie,
-      ua: query.ua || '',
-      proxy: query.proxy,
-      realIP: query.realIP,
-    },
+    createOption(query, 'weapi'),
   )
 }
