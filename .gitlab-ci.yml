@@ -1,17 +1,33 @@
+# 定义环境变量，确保拉取完整历史记录
 variables:
-  GIT_DEPTH: "0"  # 拉取完整的 Git 历史记录
+  GIT_DEPTH: "0"  
 
+# 定义阶段
 stages:
-  - deploy
+  - sync
 
-deploy_to_github:
-  stage: deploy
-  only:
-    - main  # 仅在 main 分支上触发
+# 定时同步任务
+sync_upstream:
+  stage: sync
   script:
+    # 配置 Git 用户信息
     - git config --global user.email "006lengpeng@gmail.com"
     - git config --global user.name "006lp"
-    - git fetch origin main  # 拉取远程的 main 分支
-    - git checkout -b main origin/main  # 创建本地 main 分支并跟踪 origin/main
+
+    # 添加上游仓库
+    - git remote add upstream https://gitlab.com/Binaryify/neteasecloudmusicapi.git
+    - git fetch upstream main  # 拉取上游 main 分支的更新
+    - git merge upstream/main  # 合并上游的更新
+
+    # 推送到 GitLab 自己的仓库
+    - git push origin main 
+
+    # 推送到 GitHub 仓库
     - git remote add github https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com/006lp/NeteaseCloudMusicApi.git
-    - git push github main --force  # 强制推送到 GitHub 的 main 分支
+    - git push github main --force 
+
+  # 仅在计划任务或手动触发时运行
+  only:
+    - schedules  # 仅在 Pipeline Schedule 定时任务下运行
+    - manual     # 手动触发
+
