@@ -1,0 +1,12 @@
+stages:
+  - deploy
+
+deploy_to_github:
+  stage: deploy
+  only:
+    - main  # 或者你的默认分支，如 master
+  script:
+    - git config --global user.email "006lengpeng@gmail.com"
+    - git config --global user.name "006lp"
+    - git remote add github https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com/006lp/NeteaseCloudMusicApi.git
+    - git push github main --force  # 如果需要同步其他分支，请调整命令
