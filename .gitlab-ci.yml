@@ -1,13 +1,17 @@
+variables:
+  GIT_DEPTH: "0"  # 拉取完整的 Git 历史记录
+
 stages:
   - deploy
 
 deploy_to_github:
   stage: deploy
   only:
-    - main  # 或者你的默认分支
+    - main  # 仅在 main 分支上触发
   script:
     - git config --global user.email "006lengpeng@gmail.com"
     - git config --global user.name "006lp"
-    - git fetch --all  # 添加这一行确保获取所有分支信息
+    - git fetch origin main  # 拉取远程的 main 分支
+    - git checkout -b main origin/main  # 创建本地 main 分支并跟踪 origin/main
     - git remote add github https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com/006lp/NeteaseCloudMusicApi.git
-    - git push github main --force
+    - git push github main --force  # 强制推送到 GitHub 的 main 分支
