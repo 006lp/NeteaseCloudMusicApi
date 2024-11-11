@@ -28,7 +28,7 @@ sync_upstream:
 
     # 推送到自己的 GitLab 仓库
     - git remote set-url origin https://$GITLAB_USERNAME:$GITLAB_TOKEN@gitlab.com/006lp/NeteaseCloudMusicApi.git
-    - git push origin main  # 推送到自己 GitLab 仓库
+    - git push origin main --force # 推送到自己 GitLab 仓库
 
     # 推送到 GitHub 仓库
     - git remote add github https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com/006lp/NeteaseCloudMusicApi.git
