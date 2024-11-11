@@ -26,6 +26,8 @@ sync_upstream:
     - git fetch upstream main  # 拉取上游 main 分支的更新
     - git merge upstream/main  # 合并上游的更新
 
+    - git checkout -b main origin/main
+
     # 推送到 GitLab 自己的仓库
     - git push origin main 
 
