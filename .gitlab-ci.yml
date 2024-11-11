@@ -9,6 +9,13 @@ stages:
 # 定时同步任务
 sync_upstream:
   stage: sync
+
+  # 仅在计划任务或手动触发时运行
+  only:
+    - schedules  # 仅在 Pipeline Schedule 定时任务下运行
+    - manual     # 手动触发
+    - main
+  
   script:
     # 配置 Git 用户信息
     - git config --global user.email "006lengpeng@gmail.com"
@@ -25,9 +32,3 @@ sync_upstream:
     # 推送到 GitHub 仓库
     - git remote add github https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com/006lp/NeteaseCloudMusicApi.git
     - git push github main --force 
-
-  # 仅在计划任务或手动触发时运行
-  only:
-    - schedules  # 仅在 Pipeline Schedule 定时任务下运行
-    - manual     # 手动触发
-
