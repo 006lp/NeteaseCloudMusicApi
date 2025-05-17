@@ -325,6 +325,11 @@
 307. 歌词摘录 - 我的歌词本
 308. 歌词摘录 - 添加/修改摘录歌词
 309. 歌词摘录 - 删除摘录歌词
+310. 广播电台 - 分类/地区信息
+311. 广播电台 - 我的收藏
+312. 广播电台 - 电台信息
+313. 广播电台 - 全部电台
+314. 广播电台 - 收藏/取消收藏电台
 
 ## 安装
 
@@ -5085,6 +5090,52 @@ let data = encodeURIComponent(
 **接口地址:** `/song/lyrics/mark/del`
 
 **调用例子:** `/song/lyrics/mark?id=2083850`
+
+### 广播电台 - 分类/地区信息
+
+说明: 调用此接口, 获取广播电台 - 分类/地区信息
+
+**接口地址:** `/broadcast/category/region/get`
+
+**调用例子:** `/broadcast/category/region/get`
+
+### 广播电台 - 我的收藏
+
+说明: 调用此接口, 获取广播电台 - 我的收藏
+
+**可选参数 :**
+
+`limit` : 返回数量 , 默认为 99999
+
+**接口地址:** `/broadcast/channel/collect/list`
+
+**调用例子:** `/broadcast/channel/collect/list`
+
+### 广播电台 - 电台信息
+
+说明: 调用此接口, 传入电台id, 获取广播电台 - 电台信息
+
+**必选参数：**
+
+`id`: 电台id
+
+**接口地址:** `/broadcast/channel/currentinfo`
+
+**调用例子:** `/broadcast/channel/currentinfo?id=5`
+
+### 广播电台 - 全部电台
+
+说明: 调用此接口, 获取广播电台 - 全部电台
+
+**可选参数 :**
+
+`categoryId` : 类别id, 默认为 0，可从“广播电台 - 分类/地区信息”接口获取
+
+`regionId` : 地区id, 默认为 0，可从“广播电台 - 分类/地区信息”接口获取
+
+**接口地址:** `/broadcast/channel/list`
+
+**调用例子:** `/broadcast/channel/list`
 
 ## 离线访问此文档
 

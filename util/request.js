@@ -183,13 +183,13 @@ const createRequest = (uri, data, options) => {
         if (crypto === 'eapi') {
           // 使用eapi加密
           data.header = header
-          data.e_r =
-            options.e_r != undefined
+          data.e_r = toBoolean(
+            options.e_r !== undefined
               ? options.e_r
-              : data.e_r != undefined
+              : data.e_r !== undefined
               ? data.e_r
-              : APP_CONF.encryptResponse // 用于加密接口返回值
-          data.e_r = toBoolean(data.e_r)
+              : APP_CONF.encryptResponse,
+          ) // 用于加密接口返回值
           encryptData = encrypt.eapi(uri, data)
           url = APP_CONF.apiDomain + '/eapi/' + uri.substr(5)
         } else if (crypto === 'api') {
@@ -259,7 +259,7 @@ const createRequest = (uri, data, options) => {
           x.replace(/\s*Domain=[^(;|$)]+;*/, ''),
         )
         try {
-          if (data.e_r) {
+          if (crypto === 'eapi' && data.e_r) {
             // eapi接口返回值被加密，需要解密
             answer.body = encrypt.eapiResDecrypt(
               body.toString('hex').toUpperCase(),
