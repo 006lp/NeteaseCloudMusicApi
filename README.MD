@@ -108,6 +108,7 @@ $ git clone https://gitlab.com/Binaryify/neteasecloudmusicapi.git && cd NeteaseC
 $ sudo docker build . -t netease-music-api
 
 $ sudo docker run -d -p 3000:3000 netease-music-api
+```
 
 ## Vercel 部署
 
@@ -499,6 +500,11 @@ banner({ type: 0 }).then((res) => {
 314. 广播电台 - 收藏/取消收藏电台
 315. 用户的创建歌单列表
 316. 用户的收藏歌单列表
+317. DIFM电台 - 分类
+318. DIFM电台 - 收藏列表
+319. DIFM电台 - 收藏频道
+320. DIFM电台 - 取消收藏频道
+321. DIFM电台 - 播放列表
 
 ## 单元测试
 
